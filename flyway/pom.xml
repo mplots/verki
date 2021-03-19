@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>lv.verku.viktorina</groupId>
+    <artifactId>root</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>lv.vekrku.viktorina</groupId>
+  <artifactId>flyway</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>7.5.4</version>
+        <configuration>
+          <url>jdbc:postgresql://127.0.0.1:5432/viktorina</url>
+          <user>admin</user>
+          <password>admin</password>
+          <driver>org.postgresql.Driver</driver>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.19</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

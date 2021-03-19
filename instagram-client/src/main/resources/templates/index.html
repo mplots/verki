@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verķu Viktorīna</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="static/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+    <div class="container">
+        <div class="headers">
+            <img class="title_image" src="/static/vv.png">
+            <h4 th:text="${seriesTitle}"/>
+        </div>
+
+        <ul class="list-group" >
+            <li id="leaderboard" class="list-group-item" th:each="participant: ${leaderboard}">
+                <div>
+                    <img th:src="${participant.pictureUrl}"  class="rounded-circle profile_picture">
+                    <div class="place rounded-circle" th:text="${'#' + participant.place }">#1</div>
+                </div>
+                <div>
+                    <h6 class="full_name" th:text="${participant.fullName}"/>
+                    <div class="points" th:if="${participant.correctAnswers == 1}" th:text="${participant.correctAnswers + ' punkts'} "/>
+                    <div class="points" th:if="${participant.correctAnswers != 1}" th:text="${participant.correctAnswers + ' punkti'} "/>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

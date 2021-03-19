@@ -1,0 +1,49 @@
+version: '3.1'
+services:
+  db:
+    container_name: ig-dbpostgresql
+    image: postgres:13.2
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: viktorina
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+    - 5432:5432
+
+  flyway:
+    container_name: ig-flyway
+    build: flyway
+    command: "-url=jdbc:postgresql://ig-dbpostgresql:5432/viktorina -schemas=public -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} -connectRetries=60 migrate"
+    volumes:
+      - ../flyway/src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      - db
+
+  client:
+    container_name: ig-client
+    build: ../instagram-client/src/main/docker
+    external_links:
+      - ig-dbpostgresql:dbpostgresql
+    volumes:
+      - /opt/instagram-client/data
+    environment:
+      IG_USERNAME: ${IG_USERNAME}
+      IG_PASSWORD: ${IG_PASSWORD}
+      SERIES_TITLE: ${SERIES_TITLE}
+      RATE_LIMIT_MINUTES: ${RATE_LIMIT_MINUTES}
+      HASHTAGS: ${HASHTAGS}
+      IG_DATA_DIR: /opt/instagram-client/data
+      APP_ARGUMENTS: >
+        -Dserver.port=8080
+        -Djdbc.url=jdbc:postgresql://ig-dbpostgresql:5432/viktorina
+        -Djdbc.username=${POSTGRES_USER}
+        -Djdbc.password=${POSTGRES_PASSWORD}
+    ports:
+      - "80:8080"
+    depends_on:
+      - db
+      - flyway
+
+

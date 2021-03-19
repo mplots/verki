@@ -1,0 +1,41 @@
+.headers {
+    text-align: center;
+    padding-top: 8pt;
+}
+
+#leaderboard {
+    display: flex;
+    align-items: center;
+}
+
+.full_name {
+    padding-left: 15pt;
+    margin: 0pt;
+}
+
+.profile_picture {
+    width: 37pt;
+    height: 37pt;
+}
+
+.place {
+    position: absolute;
+    margin-top: -13pt;
+    font-weight: bold;
+    color: white;
+    background: black;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20pt;
+    width: 20pt;
+    height: 20pt;
+}
+
+.points {
+    padding-left: 15pt;
+    color: gray;
+}
+
+.title_image {
+    width: 230pt;
+}
