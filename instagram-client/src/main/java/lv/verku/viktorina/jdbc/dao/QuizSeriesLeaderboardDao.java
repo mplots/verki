@@ -42,7 +42,7 @@ public class QuizSeriesLeaderboardDao {
                     "    SELECT correct_answers, ROW_NUMBER () OVER (ORDER BY correct_answers DESC ) as place FROM places  " +
                     ")  " +
                     "SELECT p.*, np.place FROM participants p  " +
-                    "INNER JOIN  numbered_places np ON p.correct_answers = np.correct_answers;",
+                    "INNER JOIN  numbered_places np ON p.correct_answers = np.correct_answers ORDER BY np.place ASC;",
                 (resultSet, i) -> QuizSeriesParticipant.builder()
                         .username(resultSet.getString("username"))
                         .fullName(resultSet.getString("full_name"))
