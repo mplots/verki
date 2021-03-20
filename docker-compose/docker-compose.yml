@@ -2,11 +2,11 @@ version: '3.1'
 services:
   db:
     container_name: ig-dbpostgresql
-    image: postgres:13.2
+    build: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: viktorina
+      POSTGRES_MULTIPLE_DATABASES: viktorina,quartz
     volumes:
       - /var/lib/postgresql/data
     ports:
@@ -32,14 +32,14 @@ services:
       IG_USERNAME: ${IG_USERNAME}
       IG_PASSWORD: ${IG_PASSWORD}
       SERIES_TITLE: ${SERIES_TITLE}
-      RATE_LIMIT_MINUTES: ${RATE_LIMIT_MINUTES}
+      RATE_LIMIT_SECONDS: ${RATE_LIMIT_SECONDS}
       HASHTAGS: ${HASHTAGS}
       IG_DATA_DIR: /opt/instagram-client/data
+      JDBC_USERNAME: ${POSTGRES_USER}
+      JDBC_PASSWORD: ${POSTGRES_PASSWORD}
+      JDBC_HOST: ig-dbpostgresql
       APP_ARGUMENTS: >
         -Dserver.port=8080
-        -Djdbc.url=jdbc:postgresql://ig-dbpostgresql:5432/viktorina
-        -Djdbc.username=${POSTGRES_USER}
-        -Djdbc.password=${POSTGRES_PASSWORD}
     ports:
       - "80:8080"
     depends_on:

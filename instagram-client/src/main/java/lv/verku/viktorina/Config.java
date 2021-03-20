@@ -2,6 +2,7 @@ package lv.verku.viktorina;
 
 import javax.sql.DataSource;
 
+import lombok.AllArgsConstructor;
 import lv.verku.viktorina.quartz.InstagramPullJob;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +22,18 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @Configuration
 @ComponentScan(basePackages = "lv.verku.viktorina")
-@PropertySource(value = { "classpath:jdbc.properties" })
+@AllArgsConstructor
 public class Config {
 
-    @Autowired
-    private Environment env;
+    private Properties properties;
 
-    @Value("${jdbc.driverClassName}")
-    private String driverClassName;
-
-    @Bean
+    @Bean()
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getRequiredProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getRequiredProperty("jdbc.url"));
-        dataSource.setUsername(env.getRequiredProperty("jdbc.username"));
-        dataSource.setPassword(env.getRequiredProperty("jdbc.password"));
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl("jdbc:postgresql://" + properties.getJdbcHost() +":" + properties.getJdbcPort()+ "/" + properties.getJdbcMainDatabase() + "");
+        dataSource.setUsername(properties.getJdbcUsername());
+        dataSource.setPassword(properties.getJdbcPassword());
         return dataSource;
     }
 

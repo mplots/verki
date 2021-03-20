@@ -14,16 +14,35 @@ public class Properties {
     @Value("#{environment.SERIES_TITLE ?: '3. sezona'}")
     private String seriesTitle;
 
-    @Value("#{environment.RATE_LIMIT_MINUTES ?: '1'}")
-    private Integer rateLimitMinutes;
+    @Value("#{environment.RATE_LIMIT_SECONDS ?: '900'}")
+    private Integer rateLimitSeconds;
 
     @Value("#{environment.HASHTAGS ?: 'verķuviktorīna'}")
     private List<String> hashtags;
+
+    @Value("#{environment.JDBC_USERNAME ?: 'admin'}")
+    private String jdbcUsername;
+
+    @Value("#{environment.JDBC_PASSWORD ?: 'admin'}")
+    private String jdbcPassword;
+
+    @Value("#{environment.JDBC_HOST ?: 'localhost'}")
+    private String jdbcHost;
+
+    @Value("#{environment.JDBC_PORT ?: '5432'}")
+    private String jdbcPort;
+
+    @Value("#{environment.JDBC_MAIN_DATABASE ?: 'viktorina'}")
+    private String jdbcMainDatabase;
+
+    @Value("#{environment.JDBC_MAIN_DATABASE ?: 'quarz'}")
+    private String jdbcQuartzDatabase;
+
 
     private RateLimiter rateLimiter;
 
     @PostConstruct
     public void initialize(){
-        rateLimiter = RateLimiter.create(1.0/( rateLimitMinutes * 60));
+        rateLimiter = RateLimiter.create(1.0/( rateLimitSeconds ));
     }
 }
