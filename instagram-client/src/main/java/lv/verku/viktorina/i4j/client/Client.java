@@ -104,7 +104,7 @@ public class Client {
         }
         new MediaGetStoryQuizParticipantsRequest(reelId, quizId, maxId).execute(client).thenAccept(r->{
             participantInfos.add(r.getParticipant_info());
-            getNextQuizParticipants(participantInfos, reelId, quizId, maxId);
+            getNextQuizParticipants(participantInfos, reelId, quizId, r.getNext_max_id());
 
         })
         .exceptionally(e->{
