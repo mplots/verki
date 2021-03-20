@@ -34,7 +34,7 @@
                     <div class="place rounded-circle" th:text="${'#' + participant.place }">#1</div>
                 </div>
                 <div>
-                    <h6 class="full_name" th:text="${participant.fullName}"/>
+                    <h6 class="full_name" th:text="${ participant.fullName == null || !participant.fullName.equals('') ? participant.fullName : participant.username }"/>
                     <div class="points" th:if="${participant.correctAnswers == 1}" th:text="${participant.correctAnswers + ' punkts'} "/>
                     <div class="points" th:if="${participant.correctAnswers != 1}" th:text="${participant.correctAnswers + ' punkti'} "/>
                 </div>
