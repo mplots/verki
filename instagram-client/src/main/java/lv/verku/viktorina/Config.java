@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
@@ -44,4 +45,15 @@ public class Config {
         return jdbcTemplate;
     }
 
+    @Bean
+    public CommonsRequestLoggingFilter logFilter() {
+        CommonsRequestLoggingFilter filter
+                = new CommonsRequestLoggingFilter();
+        filter.setIncludeQueryString(true);
+        filter.setIncludePayload(true);
+        filter.setMaxPayloadLength(10000);
+        filter.setIncludeHeaders(true);
+        filter.setAfterMessagePrefix("REQUEST DATA : ");
+        return filter;
+    }
 }
