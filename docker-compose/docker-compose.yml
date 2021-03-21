@@ -38,6 +38,7 @@ services:
       JDBC_USERNAME: ${POSTGRES_USER}
       JDBC_PASSWORD: ${POSTGRES_PASSWORD}
       JDBC_HOST: ig-dbpostgresql
+      DISABLE_POOL: ${DISABLE_POOL}
       APP_ARGUMENTS: >
         -Dserver.port=8080
         -Dlogging.level.org.springframework.web=${LOG_LEVEL}

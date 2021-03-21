@@ -38,8 +38,10 @@ public class Properties {
     @Value("#{environment.JDBC_MAIN_DATABASE ?: 'quarz'}")
     private String jdbcQuartzDatabase;
 
-
     private RateLimiter rateLimiter;
+
+    @Value("#{environment.DISABLE_POOL ?: 'false'}")
+    private Boolean disablePool;
 
     @PostConstruct
     public void initialize(){

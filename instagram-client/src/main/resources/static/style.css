@@ -1,6 +1,7 @@
 .headers {
     text-align: center;
     padding-top: 8pt;
+    padding-bottom: 8pt;
 }
 
 #leaderboard {
@@ -38,4 +39,8 @@
 
 .title_image {
     width: 230pt;
+}
+
+.leader-group {
+    margin-bottom: 20px;
 }

@@ -28,8 +28,12 @@
             <h4 th:text="${seriesTitle}"/>
         </div>
 
-        <ul class="list-group" >
-            <li id="leaderboard" class="list-group-item" th:each="participant: ${leaderboard}">
+        <ul class="list-group leader-group " th:each="participant: ${leaderboard}">
+            <li th:class="${participant.key == 1 ? 'list-group-item list-group-item-success' : 'list-group-item list-group-item-secondary'}" >
+                <h5 th:text="${participant.key + '. vieta'}"/>
+            </li>
+
+            <li id="leaderboard" class="list-group-item" th:each="participant: ${participant.value}">
                 <div>
                     <img th:src="${participant.pictureUrl}"  class="rounded-circle profile_picture">
                     <div class="place rounded-circle" th:text="${'#' + participant.place }">#1</div>
