@@ -1,9 +1,9 @@
 package lv.verku.viktorina.web.controller;
 
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.AllArgsConstructor;
 import lv.verku.viktorina.Properties;
 import lv.verku.viktorina.i4j.client.InstagramService;
+import lv.verku.viktorina.web.controller.request.GetQuizSeriesParams;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,24 +14,24 @@ import java.util.List;
 @AllArgsConstructor
 public class QuizSeriesController {
 
-    private final RateLimiter rateLimiter = RateLimiter.create(1.0/120);
     private InstagramService instagramService;
     private Properties properties;
 
     @GetMapping("/")
-    public String get(@RequestParam(name="hastag", required=false) List<String> hashtags,
-                      Model model) {
+    public String get(GetQuizSeriesParams params, Model model) {
 
-        if (hashtags == null || hashtags.size() == 0) {
+        List<String> hashtags = params.getHashtags();
+        if (hashtags.size() == 0) {
             hashtags = properties.getHashtags();
         }
 
-        if(properties.getRateLimiter().tryAcquire()) {
+        if(properties.getRateLimiter().tryAcquire() && params.getPull()) {
             instagramService.pull();
         }
 
         model.addAttribute("leaderboard", instagramService.getQuizSeriesLeaderboard(hashtags));
         model.addAttribute("seriesTitle", properties.getSeriesTitle());
+        model.addAttribute("enableGoogleAnalytics", params.getGa());
         return "index";
     }
 }

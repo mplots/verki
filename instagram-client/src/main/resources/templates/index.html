@@ -1,15 +1,18 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KSSREM4RMB"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
 
-        gtag('config', 'G-KSSREM4RMB');
-    </script>
+    <div th:if="${enableGoogleAnalytics}">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KSSREM4RMB"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-KSSREM4RMB');
+        </script>
+    </div>
 
     <title>Verķu Viktorīna</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -29,8 +32,9 @@
         </div>
 
         <ul class="list-group leader-group " th:each="participant: ${leaderboard}">
-            <li th:class="${participant.key == 1 ? 'list-group-item list-group-item-success' : 'list-group-item list-group-item-secondary'}" >
-                <h5 th:text="${participant.key + '. vieta'}"/>
+            <li th:class="${participant.key == 1 ? 'list-group-item list-group-item-success d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-secondary d-flex justify-content-between align-items-center'}" >
+                <h5 style="margin: 4pt 0pt 4pt 0pt" th:text="${participant.key + '. vieta'}"/>
+                <span style="font-weight: bold;" class="badge badge-info badge-pill" th:text="${'&nbsp;'+ participant.value.size() + '&nbsp;'}"/>
             </li>
 
             <li id="leaderboard" class="list-group-item" th:each="participant: ${participant.value}">
