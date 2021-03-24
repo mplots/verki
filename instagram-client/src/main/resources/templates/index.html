@@ -2,17 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 
-    <div th:if="${enableGoogleAnalytics}">
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KSSREM4RMB"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script th:if="${enableGoogleAnalytics}" async src="https://www.googletagmanager.com/gtag/js?id=G-KSSREM4RMB"></script>
+    <script th:if="${enableGoogleAnalytics}">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-            gtag('config', 'G-KSSREM4RMB');
-        </script>
-    </div>
+        gtag('config', 'G-KSSREM4RMB');
+    </script>
 
     <title>Verķu Viktorīna</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
