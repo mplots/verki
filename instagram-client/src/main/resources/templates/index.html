@@ -38,7 +38,6 @@
             <li id="leaderboard" class="list-group-item" th:each="participant: ${participant.value}">
                 <div>
                     <img th:src="${participant.pictureUrl}"  class="rounded-circle profile_picture">
-                    <div class="place rounded-circle" th:text="${'#' + participant.place }">#1</div>
                 </div>
                 <div>
                     <h6 class="full_name" th:text="${ participant.fullName == null || !participant.fullName.equals('') ? participant.fullName : participant.username }"/>
