@@ -9,8 +9,7 @@ public class HashtagDao extends BaseDao<Hashtag> {
     public void upsert(Hashtag hashtag) {
         jdbcTemplate.update(
         "INSERT INTO hashtag (id, hashtag) VALUES (?,?)" +
-            "ON CONFLICT (id) DO " +
-            "UPDATE SET hashtag=excluded.hashtag;",
+            "ON CONFLICT (id) DO NOTHING;",
             hashtag.getId(), hashtag.getHashtag()
         );
     }
