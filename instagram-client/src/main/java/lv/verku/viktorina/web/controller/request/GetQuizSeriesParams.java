@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class GetQuizSeriesParams {
+public class GetQuizSeriesParams extends BaseParams {
     private List<String> hashtags = new ArrayList<>();
-    private Boolean pull = true;
-    private Boolean ga = true;
 }

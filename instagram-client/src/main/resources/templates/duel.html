@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script th:if="${enableGoogleAnalytics}" async src="https://www.googletagmanager.com/gtag/js?id=G-KSSREM4RMB"></script>
+    <script th:if="${enableGoogleAnalytics}">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-KSSREM4RMB');
+    </script>
+
+    <title>Verķu Viktorīna</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="stylesheet" href="static/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+<div class="container">
+    <div class="headers">
+        <img class="title_image" src="/static/vv.png">
+        <h4 th:text="${seriesTitle}"/>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col" th:each="tally: ${duel.keySet()}">
+                <ul class="list-group leader-group">
+
+                    <li th:class="${'list-group-item list-group-item-secondary d-flex justify-content-between align-items-center'}" >
+                        <h5 style="margin: 4pt 0pt 4pt 0pt" th:text="${tally}"/>
+                        <span style="font-weight: bold;" class="badge badge-info badge-pill" th:text="${'&nbsp;'+ duel.get(tally).size() + '&nbsp;'}"/>
+                    </li>
+
+                    <li id="leaderboard" class="list-group-item" th:each="participant: ${duel.get(tally)}">
+                        <div>
+                            <img th:src="${participant.pictureUrl}"  class="rounded-circle profile_picture">
+                        </div>
+                        <div>
+                            <h6 class="full_name" th:text="${ participant.fullName == null || !participant.fullName.equals('') ? participant.fullName : participant.username }"/>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

@@ -3,35 +3,33 @@ package lv.verku.viktorina.web.controller;
 import lombok.AllArgsConstructor;
 import lv.verku.viktorina.Properties;
 import lv.verku.viktorina.service.InstagramService;
-import lv.verku.viktorina.web.controller.request.GetQuizSeriesParams;
+import lv.verku.viktorina.web.controller.request.GetDuelParams;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @AllArgsConstructor
-public class QuizSeriesController {
+public class DuelController {
 
     private InstagramService instagramService;
     private Properties properties;
 
-    @GetMapping("/quiz")
-    public String get(GetQuizSeriesParams params, Model model) {
+    @GetMapping("/")
+    public String get(GetDuelParams params, Model model) {
 
-        List<String> hashtags = params.getHashtags();
-        if (hashtags.size() == 0) {
-            hashtags = properties.getHashtags();
+        String hashtag = params.getHashtag();
+        if (hashtag == null) {
+            hashtag = properties.getHashtags().get(0);
         }
 
         if(properties.getRateLimiter().tryAcquire() && params.getPull()) {
             instagramService.pull();
         }
 
-        model.addAttribute("leaderboard", instagramService.getQuizSeriesLeaderboard(hashtags));
+        model.addAttribute("duel", instagramService.getDuel(hashtag));
         model.addAttribute("seriesTitle", properties.getSeriesTitle());
         model.addAttribute("enableGoogleAnalytics", params.getGa());
-        return "index";
+        return "duel";
     }
 }

@@ -1,10 +1,6 @@
 package lv.verku.viktorina.i4j.client;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,15 +17,18 @@ import lombok.SneakyThrows;
 import lv.verku.viktorina.i4j.action.MediaGetStoryQuizParticipantsRequest;
 import lv.verku.viktorina.i4j.model.*;
 import okhttp3.OkHttpClient;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import static java.nio.charset.Charset.forName;
 
 @Component
 public class Client {
 
     private IGClient client;
     final ObjectMapper mapper = new ObjectMapper();
-
+    private String dataDir;
 
     @SneakyThrows
     public Client(
@@ -38,7 +37,7 @@ public class Client {
                 @Value("#{environment.IG_DATA_DIR ?: '/tmp'}") String dataDir
             ) {
 
-
+        this.dataDir = dataDir;
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         File clientFile = new File(dataDir + "/" + username + ".client.ser");
@@ -62,7 +61,8 @@ public class Client {
                     List<VoterInfo> storyPollVoterInfos = properties.getStoryPollVoterInfos();
                     if (storyPollVoterInfos.size() > 0) {
                         VoterInfo voterInfo = storyPollVoterInfos.get(storyPollVoterInfos.size() - 1);
-                        getNextStoryPollVoters(properties.getStoryPollVoterInfos(), media.getReelMedia().getId(), poolId, voterInfo.getMax_id());
+                        String maxId = retrieveLastKnownMaxId(poolId, voterInfo.getMax_id());
+                        getNextStoryPollVoters(properties.getStoryPollVoterInfos(), media.getReelMedia().getId(), poolId, maxId);
                     }
 
                 }
@@ -74,7 +74,8 @@ public class Client {
                     List<StoryParticipantInfo> storyQuizParticipantInfos = properties.getStoryQuizParticipantInfos();
                     if (storyQuizParticipantInfos.size() > 0) {
                         StoryParticipantInfo participantInfo = storyQuizParticipantInfos.get(storyQuizParticipantInfos.size()-1);
-                        getNextQuizParticipants(properties.getStoryQuizParticipantInfos(), media.getReelMedia().getId(), quizId, participantInfo.getMaxId());
+                        String maxId = retrieveLastKnownMaxId(quizId, participantInfo.getMaxId());
+                        getNextQuizParticipants(properties.getStoryQuizParticipantInfos(), media.getReelMedia().getId(), quizId, maxId);
                     }
                 }
             }
@@ -87,6 +88,7 @@ public class Client {
         if (maxId == null) {
             return;
         }
+        storeLastKnownMaxId(poolId, maxId);
         new MediaGetStoryPollVotersRequest(reelId, poolId, maxId).execute(client).thenAccept(r->{
             voterInfos.add(r.getVoter_info());
             getNextStoryPollVoters(voterInfos, reelId, poolId, r.getNext_max_id());
@@ -102,6 +104,7 @@ public class Client {
         if (maxId == null) {
             return;
         }
+        storeLastKnownMaxId(quizId, maxId);
         new MediaGetStoryQuizParticipantsRequest(reelId, quizId, maxId).execute(client).thenAccept(r->{
             participantInfos.add(r.getParticipant_info());
             getNextQuizParticipants(participantInfos, reelId, quizId, r.getNext_max_id());
@@ -188,6 +191,19 @@ public class Client {
         oIn.close();
 
         return t;
+    }
+
+    private String retrieveLastKnownMaxId(String id, String defaultMaxId) {
+        try {
+            return FileUtils.readFileToString(new File(dataDir + "/" + id), forName("UTF-8"));
+        } catch (IOException e) {
+           return defaultMaxId;
+        }
+    }
+
+    @SneakyThrows
+    private void storeLastKnownMaxId(String id, String maxId) {
+        FileUtils.writeStringToFile(new File(dataDir + "/" + id), maxId, forName("UTF-8"), false);
     }
 
     public static OkHttpClient formTestHttpClient(SerializableCookieJar jar) {
