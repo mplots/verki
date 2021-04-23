@@ -22,8 +22,10 @@ import okhttp3.OkHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import simplehttp.HttpResponse;
 
 import static java.nio.charset.Charset.forName;
+import static simplehttp.HttpClients.anApacheClient;
 
 @Component
 public class Client {
@@ -56,7 +58,10 @@ public class Client {
     public PublicProfile getPublicProfile(String username) {
         rateLimiter.acquire();
         URL url = new URL("https://www.instagram.com/"+ username +"/?__a=1");
-        return mapper.readValue(url, PublicProfile.class);
+        HttpResponse response = anApacheClient().get(url);
+        String json = response.getContent().asString();
+        System.out.println(json);
+        return mapper.readValue(json, PublicProfile.class);
     }
 
     public List<ReelMediaWrapper> getReelMedia() {
