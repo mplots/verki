@@ -33,7 +33,7 @@ public class Client {
     private IGClient client;
     final ObjectMapper mapper = new ObjectMapper();
     private String dataDir;
-    private RateLimiter rateLimiter = RateLimiter.create(1.0/5.0);
+    private RateLimiter rateLimiter = RateLimiter.create(1.0/15.0);
 
     @SneakyThrows
     public Client(
@@ -60,7 +60,6 @@ public class Client {
         URL url = new URL("https://www.instagram.com/"+ username +"/?__a=1");
         HttpResponse response = anApacheClient().get(url);
         String json = response.getContent().asString();
-        System.out.println(json);
         return mapper.readValue(json, PublicProfile.class);
     }
 
