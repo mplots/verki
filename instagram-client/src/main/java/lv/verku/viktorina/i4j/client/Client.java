@@ -22,10 +22,8 @@ import okhttp3.OkHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import simplehttp.HttpResponse;
 
 import static java.nio.charset.Charset.forName;
-import static simplehttp.HttpClients.anApacheClient;
 
 @Component
 public class Client {
