@@ -18,12 +18,7 @@ import lv.verku.viktorina.jdbc.dto.QuizSeriesParticipant;
 import lv.verku.viktorina.service.exception.UnexpectedNumberOfPoolsForHashtagException;
 import lv.verku.viktorina.service.model.Leaderboard;
 import org.springframework.stereotype.Component;
-import simplehttp.HttpClient;
-import simplehttp.HttpClients;
-import simplehttp.HttpResponse;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
