@@ -1,5 +1,6 @@
 package lv.verku.viktorina.i4j.client;
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -13,6 +14,7 @@ import com.github.instagram4j.instagram4j.models.user.Profile;
 import com.github.instagram4j.instagram4j.requests.media.MediaGetStoryPollVotersRequest;
 import com.github.instagram4j.instagram4j.utils.IGUtils;
 
+import com.google.common.util.concurrent.RateLimiter;
 import lombok.SneakyThrows;
 import lv.verku.viktorina.i4j.action.MediaGetStoryQuizParticipantsRequest;
 import lv.verku.viktorina.i4j.model.*;
@@ -20,8 +22,10 @@ import okhttp3.OkHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import simplehttp.HttpResponse;
 
 import static java.nio.charset.Charset.forName;
+import static simplehttp.HttpClients.anApacheClient;
 
 @Component
 public class Client {
@@ -29,6 +33,7 @@ public class Client {
     private IGClient client;
     final ObjectMapper mapper = new ObjectMapper();
     private String dataDir;
+    private RateLimiter rateLimiter = RateLimiter.create(1.0/5.0);
 
     @SneakyThrows
     public Client(
@@ -47,6 +52,13 @@ public class Client {
         } else {
             client = getClientFromSerialize(clientFile, cookieFile);
         }
+    }
+
+    @SneakyThrows
+    public PublicProfile getPublicProfile(String username) {
+        rateLimiter.acquire();
+        URL url = new URL("https://www.instagram.com/"+ username +"/?__a=1");
+        return mapper.readValue(url, PublicProfile.class);
     }
 
     public List<ReelMediaWrapper> getReelMedia() {

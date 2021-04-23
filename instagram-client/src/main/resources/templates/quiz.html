@@ -29,7 +29,24 @@
             <h4 th:text="${seriesTitle}"/>
         </div>
 
-        <ul class="list-group leader-group " th:each="participant: ${leaderboard}">
+        <div class="container">
+            <div class="row headers">
+                <div class="col">
+                    <h1 style="color: deeppink">♀</h1>
+                    <h6>Dāmas</h6>
+                    <label><div class="badge badge-success" th:text="${leaderboard.femaleCount + ' punkti'}"/></label>
+                </div>
+
+                <div class="col">
+                    <h1 style="color: darkblue">♂</h1>
+                    <h6>Kungi</h6>
+                    <lebel><div class="badge badge-light" th:text="${leaderboard.maleCount + ' punkti'}"/></lebel>
+
+                </div>
+            </div>
+        </div>
+
+        <ul class="list-group leader-group " th:each="participant: ${leaderboard.leaders}">
             <li th:class="${participant.key == 1 ? 'list-group-item list-group-item-success d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-secondary d-flex justify-content-between align-items-center'}" >
                 <h5 style="margin: 4pt 0pt 4pt 0pt" th:text="${participant.key + '. vieta'}"/>
                 <span style="font-weight: bold;" class="badge badge-info badge-pill" th:text="${'&nbsp;'+ participant.value.size() + '&nbsp;'}"/>

@@ -1,21 +1,17 @@
 package lv.verku.viktorina.jdbc.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+@Data
 @SuperBuilder
 public class Profile extends BaseDto {
-    @Setter
-    @Getter
+    public static final Long MALE_GENDER_ID= 1l;
+    public static final Long FEMALE_GENDER_ID= 2l;
+    public static final Long UNKNOWN_GENDER_ID= 3l;
+
     private String username;
-
-    @Setter
-    @Getter
     private String fullName;
-
-    @Setter
-    @Getter
     private String pictureUrl;
-
+    private Long genderId;
 }

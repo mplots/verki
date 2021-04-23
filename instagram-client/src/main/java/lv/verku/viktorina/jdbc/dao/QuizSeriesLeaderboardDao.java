@@ -50,6 +50,7 @@ public class QuizSeriesLeaderboardDao {
                         .correctAnswers(resultSet.getLong("correct_answers"))
                         .pictureUrl(resultSet.getString("picture_url"))
                         .place(resultSet.getLong("place"))
+                        .genderId(resultSet.getLong("gender_id"))
                         .build(),
                 hashtags.toArray()
         );

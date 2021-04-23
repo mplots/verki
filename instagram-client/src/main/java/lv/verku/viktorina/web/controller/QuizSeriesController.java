@@ -17,7 +17,7 @@ public class QuizSeriesController {
     private InstagramService instagramService;
     private Properties properties;
 
-    @GetMapping("/quiz")
+    @GetMapping("/")
     public String get(GetQuizSeriesParams params, Model model) {
 
         List<String> hashtags = params.getHashtags();
@@ -29,9 +29,17 @@ public class QuizSeriesController {
             instagramService.pull();
         }
 
+
         model.addAttribute("leaderboard", instagramService.getQuizSeriesLeaderboard(hashtags));
         model.addAttribute("seriesTitle", properties.getSeriesTitle());
         model.addAttribute("enableGoogleAnalytics", params.getGa());
-        return "index";
+        return "quiz";
     }
+
+    @GetMapping("/synchronizeProfiles")
+    public String synchronizeProfiles() {
+        instagramService.synchronizeProfilePictures();
+        return "empty";
+    }
+
 }

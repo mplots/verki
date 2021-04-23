@@ -15,7 +15,7 @@ public class DuelController {
     private InstagramService instagramService;
     private Properties properties;
 
-    @GetMapping("/")
+    @GetMapping("/duel")
     public String get(GetDuelParams params, Model model) {
 
         String hashtag = params.getHashtag();
