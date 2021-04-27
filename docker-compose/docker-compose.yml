@@ -27,7 +27,7 @@ services:
     external_links:
       - ig-dbpostgresql:dbpostgresql
     volumes:
-      - /opt/instagram-client/data:/instagram/data
+      - /var/data/instagram:/opt/instagram-client/data
     environment:
       IG_USERNAME: ${IG_USERNAME}
       IG_PASSWORD: ${IG_PASSWORD}
