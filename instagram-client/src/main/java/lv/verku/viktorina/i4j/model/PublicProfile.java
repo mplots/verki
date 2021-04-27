@@ -17,5 +17,11 @@ public class PublicProfile {
     public static class User {
         @JsonProperty("profile_pic_url")
         private String profilePicUrl;
+
+        @JsonProperty("id")
+        private String id;
+
+        @JsonProperty("username")
+        private String username;
     }
 }

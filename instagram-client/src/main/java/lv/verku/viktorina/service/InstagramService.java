@@ -80,9 +80,15 @@ public class InstagramService {
         List<Profile> profiles =  profileDao.getAll();
         for (Profile profile: profiles) {
             PublicProfile publicProfile = client.getPublicProfile(profile.getUsername());
-            profile.setPictureUrl(publicProfile.getGraphql().getUser().getProfilePicUrl());
-            System.out.println(profile.getUsername());
-            profileDao.upsert(profile);
+            if (publicProfile.getGraphql()!=null
+                    && publicProfile.getGraphql().getUser()!=null
+                    && publicProfile.getGraphql().getUser().getProfilePicUrl() !=null
+            ) {
+                profile.setPictureUrl(publicProfile.getGraphql().getUser().getProfilePicUrl());
+                profileDao.upsert(profile);
+                client.downloadProfilePicture(publicProfile, properties.getImageDirectory());
+
+            }
         }
     }
 

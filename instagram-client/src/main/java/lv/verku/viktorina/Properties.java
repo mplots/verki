@@ -43,6 +43,9 @@ public class Properties {
     @Value("#{environment.DISABLE_POOL ?: 'false'}")
     private Boolean disablePool;
 
+    @Value("#{environment.IMAGE_DIRECTORY ?: '/opt/instagram-client/data/img-profile/'}")
+    private String imageDirectory;
+
     @PostConstruct
     public void initialize(){
         rateLimiter = RateLimiter.create(1.0/( rateLimitSeconds ));

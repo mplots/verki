@@ -18,13 +18,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @Configuration
 @ComponentScan(basePackages = "lv.verku.viktorina")
 @AllArgsConstructor
-public class Config {
+public class Config implements WebMvcConfigurer {
 
     private Properties properties;
 
@@ -55,5 +57,10 @@ public class Config {
         filter.setIncludeHeaders(true);
         filter.setAfterMessagePrefix("REQUEST DATA : ");
         return filter;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/ig-images/**").addResourceLocations("file:" + properties.getImageDirectory());
     }
 }

@@ -2,6 +2,8 @@ package lv.verku.viktorina.i4j.client;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,6 +18,7 @@ import com.github.instagram4j.instagram4j.utils.IGUtils;
 
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import lv.verku.viktorina.i4j.action.MediaGetStoryQuizParticipantsRequest;
 import lv.verku.viktorina.i4j.model.*;
 import okhttp3.OkHttpClient;
@@ -25,9 +28,12 @@ import org.springframework.stereotype.Component;
 import simplehttp.HttpResponse;
 
 import static java.nio.charset.Charset.forName;
+import static simplehttp.HeaderList.headers;
+import static simplehttp.HeaderPair.header;
 import static simplehttp.HttpClients.anApacheClient;
 
 @Component
+@Log4j2
 public class Client {
 
     private IGClient client;
@@ -58,9 +64,29 @@ public class Client {
     public PublicProfile getPublicProfile(String username) {
         rateLimiter.acquire();
         URL url = new URL("https://www.instagram.com/"+ username +"/?__a=1");
-        HttpResponse response = anApacheClient().get(url);
+        HttpResponse response = anApacheClient().get(url,
+                headers(
+                        header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36"),
+                        header("cookie", " ig_cb=1; ig_did=F00D3006-4C93-4F9E-A39A-55FF953A0C7B; mid=Xv8jpgAEAAGKY7BqoYCdP0z_Fk-2; datr=MlqEX4KAhgfOusBGmpfM9YO7; fbm_124024574287414=base_domain=.instagram.com; csrftoken=x310uUdwEqb7VWPwB2IlQ04lICCvfmV7; ds_user_id=33955474; sessionid=33955474%3Awx9Dmc53fsjgri%3A3; shbid=14751; rur=VLL; shbts=1619184601.2082224; fbsr_124024574287414=fubw8adnw6NNSUKYZCZAUGU4_CK8uiFSQj_MR-48qqM.eyJ1c2VyX2lkIjoiMTAwMDAwMzgwODExNDYxIiwiY29kZSI6IkFRQmJMeWhJUmNtV2ZHenhIajQ0ZFo0RUFKYUg1QzlnZ2k1YzVrbnhkSWtUcDNiWVVhWHFIdXZkUFJMUTYxbmFxdjJ3V0txWjRhN1MySUhxTnY1V3hXeHJGR1Z0YlBJeVdmS3UzZHRjbEVrVjZhQ3B5LUttM3BlQnRXeUZiLW9CMzZHMkNzMHpCTHVWYkczQkxleHdNd2FXdUJTX0o0cHVQd0o3VlotWlV1aGtJVVU1MlNlVnJuUzBrdGVjZTA4YTBxck5pdFFER1c1b1owZHgtV3dCVXNDbE5oQjNfcFdXWG9odHlzZWltbV9NRnozNzMzMTJjRHRMekVENVlrS1VzYi1BaloyQmpqR3hUdHBLaWZSMVVWbHpPdUNrQ1U4dU5POU0xZXZxdXRiSks3cHJrVGFpRm80eU1wb3hiVi0zc0cxNV9TZUo1MzJPNFZHa3N5Vktsa2puIiwib2F1dGhfdG9rZW4iOiJFQUFCd3pMaXhuallCQUNQV1EyWkJPMzVoWkFMdXQwblVqeEhaQ3dWSGJRVWFLQzJRZmQ0RzZPTDMySzJhbXdnSzRGdVNvRUR3V2ExOUxHZzdwWkFLUzBUMlNvWXlYRmJCN0ZDSGpyd3lIQ2JzWXZteURJTmRuRVpBQUkzeUZkNUhGZ3BSYnFWQjBNRDNWWkJTZVpCVXZaQ0NDZXpTbEd1TWR4dkpmSUNDTVd5ZTBFbVpDMjV2MDVSNTYiLCJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZF9hdCI6MTYxOTIwMzcxM30")
+        ));
         String json = response.getContent().asString();
+        log.debug(json);
         return mapper.readValue(json, PublicProfile.class);
+    }
+
+    @SneakyThrows
+    public void downloadProfilePicture(PublicProfile publicProfile, String directory) {
+        String imagePath = directory + publicProfile.getGraphql().getUser().getUsername();
+        File imageFile = new File(imagePath);
+        if(!imageFile.exists()) {
+            rateLimiter.acquire();
+            URL url = new URL(publicProfile.getGraphql().getUser().getProfilePicUrl());
+
+            try(InputStream in = url.openStream()) {
+                Files.copy(in, Paths.get(imagePath));
+            }
+        }
+
     }
 
     public List<ReelMediaWrapper> getReelMedia() {
