@@ -11,7 +11,7 @@ RUN useradd -r -u ${UID} -m -c "iot rest role account" -d ${REST_WORK} -s /bin/f
 
 COPY maven/instagram-client-*.jar ${REST_WORK}/app.jar
 
-RUN mkdir ${REST_WORK}/data/img-profile &&  chown ${USER} -R ${REST_WORK}
+RUN mkdir -p ${REST_WORK}/data/img-profile &&  chown ${USER} -R ${REST_WORK}
 
 USER ${USER}
 
