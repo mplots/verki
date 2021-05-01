@@ -1,10 +1,11 @@
 package lv.verku.viktorina.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import lv.verku.viktorina.Properties;
 import lv.verku.viktorina.i4j.client.Client;
 import lv.verku.viktorina.i4j.client.PersistenceService;
+import lv.verku.viktorina.i4j.client.exception.ClientException;
 import lv.verku.viktorina.i4j.model.PublicProfile;
 import lv.verku.viktorina.i4j.model.ReelMediaWrapper;
 import lv.verku.viktorina.jdbc.dao.DuelDao;
@@ -17,8 +18,10 @@ import lv.verku.viktorina.jdbc.dto.Profile;
 import lv.verku.viktorina.jdbc.dto.QuizSeriesParticipant;
 import lv.verku.viktorina.service.exception.UnexpectedNumberOfPoolsForHashtagException;
 import lv.verku.viktorina.service.model.Leaderboard;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ import static lv.verku.viktorina.jdbc.dto.Profile.UNKNOWN_GENDER_ID;
 
 @Component
 @AllArgsConstructor
+@Log4j
 public class InstagramService {
 
     private Properties properties;
@@ -42,6 +46,7 @@ public class InstagramService {
         if (!properties.getDisablePool()) {
             List<ReelMediaWrapper> media = client.getReelMedia();
             persistenceService.persist(media);
+            downloadMissingProfilePictures();
         }
     }
 
@@ -76,18 +81,45 @@ public class InstagramService {
         return result;
     }
 
+    @Async("profilePictureSynchronizeTaskExecutor")
     public void synchronizeProfilePictures() {
-        List<Profile> profiles =  profileDao.getAll();
+        List<Profile> profiles =  profileDao.getWithMissingPictures();
         for (Profile profile: profiles) {
-            PublicProfile publicProfile = client.getPublicProfile(profile.getUsername());
-            if (publicProfile.getGraphql()!=null
-                    && publicProfile.getGraphql().getUser()!=null
-                    && publicProfile.getGraphql().getUser().getProfilePicUrl() !=null
-            ) {
-                profile.setPictureUrl(publicProfile.getGraphql().getUser().getProfilePicUrl());
-                profileDao.upsert(profile);
-                client.downloadProfilePicture(publicProfile, properties.getImageDirectory());
+            try {
+                PublicProfile publicProfile = client.getPublicProfile(profile.getUsername());
+                if (publicProfile.getGraphql() != null
+                        && publicProfile.getGraphql().getUser() != null
+                        && publicProfile.getGraphql().getUser().getProfilePicUrl() != null
+                ) {
+                    profile.setPictureUrl(publicProfile.getGraphql().getUser().getProfilePicUrl());
+                    String imagePath = properties.getImageDirectory() + profile.getUsername();
+                    Boolean downloaded = client.downloadProfilePicture(profile.getPictureUrl(), imagePath, true);
+                    if (downloaded) {
+                        profile.setPictureDownloadTime(LocalDateTime.now());
+                        profileDao.upsert(profile);
+                        log.info("Profile " + profile.getUsername() + " photo synchronized.");
+                    }
+                }
+            }catch (ClientException e) {
+                log.error("Failed to synchronize profile " + profile.getUsername() + " photo. ", e);
+            }
+        }
+    }
 
+    @Async("profilePictureDownloadTaskExecutor")
+    public void downloadMissingProfilePictures() {
+        List<Profile> profiles =  profileDao.getWithMissingPictures();
+        for (Profile profile: profiles) {
+            try {
+                String imagePath = properties.getImageDirectory() + profile.getUsername();
+                Boolean downloaded = client.downloadProfilePicture(profile.getPictureUrl(), imagePath, false);
+                if (downloaded) {
+                    profile.setPictureDownloadTime(LocalDateTime.now());
+                    profileDao.upsert(profile);
+                    log.info("Profile " + profile.getUsername() + " photo downloaded.");
+                }
+            }catch (ClientException e) {
+                log.error("Failed to download profile " + profile.getUsername() + " photo. ", e);
             }
         }
     }

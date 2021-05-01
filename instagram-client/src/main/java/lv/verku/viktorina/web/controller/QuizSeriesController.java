@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lv.verku.viktorina.Properties;
 import lv.verku.viktorina.service.InstagramService;
 import lv.verku.viktorina.web.controller.request.GetQuizSeriesParams;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +38,15 @@ public class QuizSeriesController {
     }
 
     @GetMapping("/synchronizeProfiles")
-    public String synchronizeProfiles() {
-        instagramService.synchronizeProfilePictures();
-        return "empty";
+    public String synchronizeProfiles(Model model) {
+        try {
+            instagramService.synchronizeProfilePictures();
+            model.addAttribute("message", "Task launched!");
+        }catch (TaskRejectedException e) {
+            model.addAttribute("message", "Task already running!");
+        }
+
+        return "synchronize";
     }
 
 }

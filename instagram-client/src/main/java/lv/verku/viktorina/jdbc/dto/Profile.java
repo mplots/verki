@@ -3,6 +3,9 @@ package lv.verku.viktorina.jdbc.dto;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @SuperBuilder
 public class Profile extends BaseDto {
@@ -14,4 +17,5 @@ public class Profile extends BaseDto {
     private String fullName;
     private String pictureUrl;
     private Long genderId;
+    private LocalDateTime pictureDownloadTime;
 }

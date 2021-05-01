@@ -1,0 +1,1 @@
+ALTER TABLE profile ADD COLUMN picture_download_time TIMESTAMP DEFAULT NULL;
