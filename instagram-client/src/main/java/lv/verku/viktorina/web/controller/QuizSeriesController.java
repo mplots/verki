@@ -27,9 +27,12 @@ public class QuizSeriesController {
         }
 
         if(properties.getRateLimiter().tryAcquire() && params.getPull()) {
-            instagramService.pull();
+            try {
+                instagramService.pull();
+            }catch (RuntimeException e) {
+                model.addAttribute("pullFailed", true);
+            }
         }
-
 
         model.addAttribute("leaderboard", instagramService.getQuizSeriesLeaderboard(hashtags));
         model.addAttribute("seriesTitle", properties.getSeriesTitle());

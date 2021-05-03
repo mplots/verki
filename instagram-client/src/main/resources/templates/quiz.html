@@ -24,6 +24,11 @@
 </head>
 <body>
     <div class="container">
+
+        <div th:if="${pullFailed}" class="alert alert-warning v-alert-warning" role="alert">
+            Ehhh. Dati nav tie jaunākie. Instagram pasūtīja dillēs. Meklēju problēmas risinājumu.
+        </div>
+
         <div class="headers">
             <img class="title_image" src="/static/vv.png">
             <h4 th:text="${seriesTitle}"/>
