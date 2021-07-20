@@ -8,10 +8,7 @@ import lv.verku.viktorina.i4j.client.PersistenceService;
 import lv.verku.viktorina.i4j.client.exception.ClientException;
 import lv.verku.viktorina.i4j.model.PublicProfile;
 import lv.verku.viktorina.i4j.model.ReelMediaWrapper;
-import lv.verku.viktorina.jdbc.dao.DuelDao;
-import lv.verku.viktorina.jdbc.dao.PoolTallyDao;
-import lv.verku.viktorina.jdbc.dao.ProfileDao;
-import lv.verku.viktorina.jdbc.dao.QuizSeriesLeaderboardDao;
+import lv.verku.viktorina.jdbc.dao.*;
 import lv.verku.viktorina.jdbc.dto.DuelParticipant;
 import lv.verku.viktorina.jdbc.dto.PoolTally;
 import lv.verku.viktorina.jdbc.dto.Profile;
@@ -38,6 +35,7 @@ public class InstagramService {
     private Client client;
     private PersistenceService persistenceService;
     private QuizSeriesLeaderboardDao quizSeriesLeaderboardDao;
+    private PoolSeriesLeaderboardDao poolSeriesLeaderboardDao;
     private DuelDao duelDao;
     private PoolTallyDao poolTallyDao;
     private ProfileDao profileDao;
@@ -51,7 +49,15 @@ public class InstagramService {
     }
 
     public Leaderboard getQuizSeriesLeaderboard(List<String> hastags) {
-        List<QuizSeriesParticipant> leaders = quizSeriesLeaderboardDao.get(hastags);
+        return getSeriesLeaderboard(hastags, poolSeriesLeaderboardDao);
+    }
+
+    public Leaderboard getPoolSeriesLeaderboard(List<String> hastags) {
+        return getSeriesLeaderboard(hastags, quizSeriesLeaderboardDao);
+    }
+
+    private Leaderboard getSeriesLeaderboard(List<String> hastags, BaseSeriesLeaderboardDao dao) {
+        List<QuizSeriesParticipant> leaders = dao.get(hastags);
         Map<Long, List<QuizSeriesParticipant>> groupedLeaders = leaders.stream().collect(Collectors.groupingBy(QuizSeriesParticipant::getPlace));
 
         return Leaderboard.builder().
@@ -59,7 +65,7 @@ public class InstagramService {
                 maleCount(countGenderLeaders(leaders, MALE_GENDER_ID)).
                 femaleCount(countGenderLeaders(leaders, FEMALE_GENDER_ID)).
                 unknownCount(countGenderLeaders(leaders, UNKNOWN_GENDER_ID)).
-               build();
+                build();
     }
 
     public Map<String, List<DuelParticipant>> getDuel(String hashtag) {

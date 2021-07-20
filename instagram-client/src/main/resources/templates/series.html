@@ -30,11 +30,11 @@
         </div>
 
         <div class="headers">
-            <img class="title_image" src="/static/vv.png">
+            <img class="title_image" src="/static/poker.png">
             <h4 th:text="${seriesTitle}"/>
         </div>
 
-        <div class="container">
+        <!--div class="container">
             <div class="row headers">
                 <div class="col">
                     <h1 style="color: deeppink">♀</h1>
@@ -49,7 +49,7 @@
 
                 </div>
             </div>
-        </div>
+        </div-->
 
         <ul class="list-group leader-group " th:each="participant: ${leaderboard.leaders}">
             <li th:class="${participant.key == 1 ? 'list-group-item list-group-item-success d-flex justify-content-between align-items-center' : 'list-group-item list-group-item-secondary d-flex justify-content-between align-items-center'}" >

@@ -10,10 +10,11 @@ import java.util.List;
 
 @Repository
 @AllArgsConstructor
-public class QuizSeriesLeaderboardDao {
+public class QuizSeriesLeaderboardDao extends BaseSeriesLeaderboardDao {
 
     protected JdbcTemplate jdbcTemplate;
 
+    @Override
     public List<QuizSeriesParticipant> get(List<String> hashtags) {
 
         String inSql = String.join(",", Collections.nCopies(hashtags.size(), "?"));
