@@ -48,11 +48,11 @@ public class InstagramService {
         }
     }
 
-    public Leaderboard getQuizSeriesLeaderboard(List<String> hastags) {
+    public Leaderboard getPoolSeriesLeaderboard(List<String> hastags) {
         return getSeriesLeaderboard(hastags, poolSeriesLeaderboardDao);
     }
 
-    public Leaderboard getPoolSeriesLeaderboard(List<String> hastags) {
+    public Leaderboard getQuizSeriesLeaderboard(List<String> hastags) {
         return getSeriesLeaderboard(hastags, quizSeriesLeaderboardDao);
     }
 

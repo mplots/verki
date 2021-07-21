@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Duelis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="stylesheet" href="static/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+<div class="container">
+
+    <table style="height:100%;width:100%; position: absolute; top: 0; bottom: 0; left: 0; right: 0;border:0px; padding-left: 20px; padding-right: 20px">
+        <th th:style="${'height: ' + 100/(result.size()+2) + '%;'}">
+            <td></td>
+        </th>
+        <tr th:each="chunk: ${result}" th:style="${'height: ' + 100/(result.size()+2) + '%;'}">
+            <td th:each="participant: ${chunk}">
+                <div style="text-align: center">
+                    <img th:src="${'/ig-images/' + participant.username}"  class="rounded-circle profile_picture" onerror="this.onerror=null; this.src='/static/default_profile.jpeg'">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

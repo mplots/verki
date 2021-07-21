@@ -1,7 +1,9 @@
 package lv.verku.viktorina.web.controller;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lv.verku.viktorina.Properties;
+import lv.verku.viktorina.jdbc.dto.QuizSeriesParticipant;
 import lv.verku.viktorina.service.InstagramService;
 import lv.verku.viktorina.service.model.Leaderboard;
 import lv.verku.viktorina.web.controller.request.GetQuizSeriesParams;
@@ -20,7 +22,7 @@ public class SeriesController {
     private Properties properties;
 
     @GetMapping("/")
-    private String  getSeries(GetQuizSeriesParams params, Model model, Leaderboard leaderboard) {
+    private String getSeries(GetQuizSeriesParams params, Model model, Leaderboard leaderboard) {
         List<String> hashtags = params.getHashtags();
         if (hashtags.size() == 0) {
             hashtags = properties.getHashtags();
@@ -34,7 +36,7 @@ public class SeriesController {
             }
         }
 
-        model.addAttribute("leaderboard", instagramService.getQuizSeriesLeaderboard(hashtags));
+        model.addAttribute("leaderboard", instagramService.getPoolSeriesLeaderboard(hashtags));
         model.addAttribute("seriesTitle", properties.getSeriesTitle());
         model.addAttribute("enableGoogleAnalytics", params.getGa());
         return "series";
@@ -45,11 +47,28 @@ public class SeriesController {
         try {
             instagramService.synchronizeProfilePictures();
             model.addAttribute("message", "Task launched!");
-        }catch (TaskRejectedException e) {
+        } catch (TaskRejectedException e) {
             model.addAttribute("message", "Task already running!");
         }
 
         return "synchronize";
     }
 
+    @GetMapping("/grid")
+    public String grid(GetQuizSeriesParams params, Model model) {
+
+        List<String> hashtags = params.getHashtags();
+        if (hashtags.size() == 0) {
+            hashtags = properties.getHashtags();
+        }
+
+
+        Leaderboard leaderboard = instagramService.getPoolSeriesLeaderboard(hashtags);
+        List<QuizSeriesParticipant> firstPlace = leaderboard.getLeaders().get(1l);
+        List<List<QuizSeriesParticipant>> result =  Lists.partition(firstPlace, 4);
+
+        model.addAttribute("result", result);
+
+        return "grid";
+    }
 }
