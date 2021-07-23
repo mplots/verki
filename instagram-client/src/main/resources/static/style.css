@@ -19,6 +19,11 @@
     height: 37pt;
 }
 
+.grid_picture {
+    width: 55pt;
+    height: 55pt;
+}
+
 .place {
     position: absolute;
     margin-top: -13pt;
