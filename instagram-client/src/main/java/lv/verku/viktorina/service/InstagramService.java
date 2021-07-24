@@ -118,7 +118,7 @@ public class InstagramService {
         for (Profile profile: profiles) {
             try {
                 String imagePath = properties.getImageDirectory() + profile.getUsername();
-                Boolean downloaded = client.downloadProfilePicture(profile.getPictureUrl(), imagePath, false);
+                Boolean downloaded = client.downloadProfilePicture(profile.getPictureUrl(), imagePath, true);
                 if (downloaded) {
                     profile.setPictureDownloadTime(LocalDateTime.now());
                     profileDao.upsert(profile);

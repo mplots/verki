@@ -2,19 +2,25 @@ package lv.verku.viktorina.i4j.client;
 
 import com.github.instagram4j.instagram4j.models.media.reel.VoterInfo;
 import lombok.AllArgsConstructor;
+import lv.verku.viktorina.Properties;
 import lv.verku.viktorina.i4j.model.*;
 import lv.verku.viktorina.jdbc.dao.*;
 import lv.verku.viktorina.jdbc.dto.*;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @AllArgsConstructor
 public class PersistenceService {
 
+    private Properties properties;
     private PoolDao poolDao;
     private PoolTallyDao poolTallyDao;
     private ProfileDao profileDao;
@@ -143,11 +149,22 @@ public class PersistenceService {
     }
 
     private Profile persistProfile(com.github.instagram4j.instagram4j.models.user.Profile user) {
+
+        Profile existingProfile = profileDao.get(user.getPk());
+        Boolean imageFileExists = Files.exists(Paths.get(properties.getImageDirectory() + user.getUsername()));
+
+        //Null picture download time when picture url doesn't match or image file doesn't exists
+        LocalDateTime pictureDownloadTime = null;
+        if (existingProfile !=null && Objects.equals(user.getProfile_pic_url(), existingProfile.getPictureUrl()) && imageFileExists) {
+            pictureDownloadTime = existingProfile.getPictureDownloadTime();
+        }
+
         Profile profile = Profile.builder()
                 .id(user.getPk())
                 .fullName(user.getFull_name())
                 .username(user.getUsername())
                 .pictureUrl(user.getProfile_pic_url())
+                .pictureDownloadTime(pictureDownloadTime)
                 .build();
         profileDao.upsert(profile);
         return profile;
