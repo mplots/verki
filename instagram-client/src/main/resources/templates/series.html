@@ -59,7 +59,7 @@
 
             <li id="leaderboard" class="list-group-item" th:each="participant: ${participant.value}">
                 <div>
-                    <img th:src="${'/ig-images/' + participant.username}"  class="rounded-circle profile_picture" onerror="this.onerror=null; this.src='/static/default_profile.jpeg'">
+                    <img th:src="${'/ig-images/' + participant.username + '?reload=' + leaderboard.currentTimeMillis}"  class="rounded-circle profile_picture" onerror="this.onerror=null; this.src='/static/default_profile.jpeg'">
                 </div>
                 <div>
                     <h6 class="full_name" th:text="${ participant.fullName == null || !participant.fullName.equals('') ? participant.fullName : participant.username }"/>

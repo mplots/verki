@@ -65,6 +65,7 @@ public class InstagramService {
                 maleCount(countGenderLeaders(leaders, MALE_GENDER_ID)).
                 femaleCount(countGenderLeaders(leaders, FEMALE_GENDER_ID)).
                 unknownCount(countGenderLeaders(leaders, UNKNOWN_GENDER_ID)).
+                currentTimeMillis(System.currentTimeMillis()).
                 build();
     }
 

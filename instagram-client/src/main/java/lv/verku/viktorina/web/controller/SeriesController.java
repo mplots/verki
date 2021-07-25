@@ -68,6 +68,7 @@ public class SeriesController {
         List<List<QuizSeriesParticipant>> result =  Lists.partition(firstPlace, 3);
 
         model.addAttribute("result", result);
+        model.addAttribute("currentTimeMillis", leaderboard.getCurrentTimeMillis());
 
         return "grid";
     }

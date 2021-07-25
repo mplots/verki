@@ -16,4 +16,5 @@ public class Leaderboard {
     private Long maleCount = 0l;
     private Long femaleCount = 0l;
     private Long unknownCount = 0l;
+    private Long currentTimeMillis = System.currentTimeMillis();
 }

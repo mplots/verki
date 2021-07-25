@@ -26,7 +26,7 @@ public class ProfileDao extends BaseDao<Profile>{
                         "UPDATE SET id = excluded.id, username = excluded.username, " +
                         "full_name = excluded.full_name, " +
                         "picture_url=excluded.picture_url, " +
-                        "picture_download_time=excluded.picture_download_time;",
+                        "picture_download_time=COALESCE(excluded.picture_download_time, p.picture_download_time);",
                 profile.getId(), profile.getUsername(), profile.getFullName(), profile.getPictureUrl(), toDate(profile.getPictureDownloadTime())
         );
     }

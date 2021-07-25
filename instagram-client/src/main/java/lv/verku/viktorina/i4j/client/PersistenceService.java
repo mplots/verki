@@ -150,21 +150,11 @@ public class PersistenceService {
 
     private Profile persistProfile(com.github.instagram4j.instagram4j.models.user.Profile user) {
 
-        Profile existingProfile = profileDao.get(user.getPk());
-        Boolean imageFileExists = Files.exists(Paths.get(properties.getImageDirectory() + user.getUsername()));
-
-        //Null picture download time when picture url doesn't match or image file doesn't exists
-        LocalDateTime pictureDownloadTime = null;
-        if (existingProfile !=null && Objects.equals(user.getProfile_pic_url(), existingProfile.getPictureUrl()) && imageFileExists) {
-            pictureDownloadTime = existingProfile.getPictureDownloadTime();
-        }
-
         Profile profile = Profile.builder()
                 .id(user.getPk())
                 .fullName(user.getFull_name())
                 .username(user.getUsername())
                 .pictureUrl(user.getProfile_pic_url())
-                .pictureDownloadTime(pictureDownloadTime)
                 .build();
         profileDao.upsert(profile);
         return profile;
