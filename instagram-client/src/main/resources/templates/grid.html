@@ -14,12 +14,12 @@
 <body>
 <div class="container" >
 
-    <table style="height:450px;width:100%; position: absolute; top: 250px; bottom: 0; left: 0; right: 0;border:0px; padding-left: 20px; padding-right: 20px">
+    <table style="height:450px;width:100%; position: absolute; top: 180px; bottom: 0; left: 0; right: 0;border:0px; padding-left: 20px; padding-right: 20px">
 
         <tr th:each="chunk: ${result}" th:style="${'height: ' + 100/(result.size()) + '%;'}">
             <td th:each="participant: ${chunk}">
                 <div style="text-align: center">
-                    <img th:src="${'/ig-images/' + participant.username + 'reload=' + currentTimeMillis}"  class="rounded-circle profile_picture" onerror="this.onerror=null; this.src='/static/default_profile.jpeg'">
+                    <img th:src="${'/ig-images/' + participant.username + '?reload=' + currentTimeMillis}"  class="rounded-circle grid_picture" onerror="this.onerror=null; this.src='/static/default_profile.jpeg'">
                 </div>
             </td>
         </tr>

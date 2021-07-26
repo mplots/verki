@@ -65,7 +65,7 @@ public class SeriesController {
 
         Leaderboard leaderboard = instagramService.getPoolSeriesLeaderboard(hashtags);
         List<QuizSeriesParticipant> firstPlace = leaderboard.getLeaders().get(1l);
-        List<List<QuizSeriesParticipant>> result =  Lists.partition(firstPlace, 3);
+        List<List<QuizSeriesParticipant>> result =  Lists.partition(firstPlace, 2);
 
         model.addAttribute("result", result);
         model.addAttribute("currentTimeMillis", leaderboard.getCurrentTimeMillis());
