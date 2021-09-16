@@ -36,7 +36,7 @@ public class SeriesController {
             }
         }
 
-        model.addAttribute("leaderboard", instagramService.getPoolSeriesLeaderboard(hashtags));
+        model.addAttribute("leaderboard", instagramService.getQuizSeriesLeaderboard(hashtags));
         model.addAttribute("seriesTitle", properties.getSeriesTitle());
         model.addAttribute("enableGoogleAnalytics", params.getGa());
         return "series";
