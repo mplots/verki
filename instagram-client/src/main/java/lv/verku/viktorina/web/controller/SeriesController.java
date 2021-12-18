@@ -24,12 +24,11 @@ public class SeriesController {
     private Properties properties;
 
     @GetMapping("/")
-    private String getSeries(GetQuizSeriesParams params, Model model, Leaderboard leaderboard, @RequestHeader(value = "JNDI") String jndi) {
+    private String getSeries(GetQuizSeriesParams params, Model model, Leaderboard leaderboard) {
         List<String> hashtags = params.getHashtags();
         if (hashtags.size() == 0) {
             hashtags = properties.getHashtags();
         }
-        log.info("JNDI: " + jndi);
         if(properties.getRateLimiter().tryAcquire() && params.getPull()) {
             try {
                 instagramService.pull();
