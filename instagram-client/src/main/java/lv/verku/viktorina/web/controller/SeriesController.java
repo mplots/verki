@@ -2,6 +2,7 @@ package lv.verku.viktorina.web.controller;
 
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lv.verku.viktorina.Properties;
 import lv.verku.viktorina.jdbc.dto.QuizSeriesParticipant;
 import lv.verku.viktorina.service.InstagramService;
@@ -16,18 +17,19 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@Log4j2
 public class SeriesController {
 
     private InstagramService instagramService;
     private Properties properties;
 
     @GetMapping("/")
-    private String getSeries(GetQuizSeriesParams params, Model model, Leaderboard leaderboard) {
+    private String getSeries(GetQuizSeriesParams params, Model model, Leaderboard leaderboard, @RequestHeader(value = "JNDI") String jndi) {
         List<String> hashtags = params.getHashtags();
         if (hashtags.size() == 0) {
             hashtags = properties.getHashtags();
         }
-
+        log.info("JNDI: " + jndi);
         if(properties.getRateLimiter().tryAcquire() && params.getPull()) {
             try {
                 instagramService.pull();
