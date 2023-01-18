@@ -201,24 +201,14 @@ public class Client {
 
     @SneakyThrows
     private IGClient serializeLogin(File clientFile, File cookieFile, String username, String password) {
-        SerializableCookieJar jar = new SerializableCookieJar();
-        IGClient lib = new IGClient.Builder().username(username).password(password)
-                .client(formTestHttpClient(jar))
-                .login();
-        serialize(lib, clientFile);
-        serialize(jar, cookieFile);
-        return IGClient.from(new FileInputStream(clientFile), formTestHttpClient(deserialize(cookieFile, SerializableCookieJar.class)));
+        IGClient lib = new IGClient.Builder().username(username).password(password).login();
+        lib.serialize(clientFile, cookieFile);
+        return lib;
     }
 
     @SneakyThrows
     private IGClient getClientFromSerialize(File clientFile, File cookieFile) {
-
-        InputStream fileIn = new FileInputStream(clientFile);
-        IGClient client = IGClient.from(fileIn,
-                formTestHttpClient(deserialize(cookieFile, SerializableCookieJar.class)));
-        fileIn.close();
-
-        return client;
+        return IGClient.deserialize(clientFile, cookieFile);
     }
 
     @SneakyThrows
