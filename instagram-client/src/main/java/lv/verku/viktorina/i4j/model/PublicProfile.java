@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class PublicProfile {
 
+    @JsonProperty("data")
     private Graphql graphql;
 
     @Data
