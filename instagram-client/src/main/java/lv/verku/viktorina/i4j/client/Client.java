@@ -26,6 +26,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import simplehttp.HttpResponse;
+import simplehttp.configuration.AutomaticRedirectHandling;
 
 import static java.nio.charset.Charset.forName;
 import static simplehttp.HeaderList.headers;
@@ -64,7 +65,10 @@ public class Client {
         try {
             rateLimiter.acquire();
             URL url = new URL("https://www.instagram.com/api/v1/users/web_profile_info/?username=" + username);
-            HttpResponse response = anApacheClient().get(url,
+
+            HttpResponse response = anApacheClient()
+                    .with(AutomaticRedirectHandling.on())
+                    .get(url,
                     headers(
                         header("x-ig-app-id", "936619743392459")
                     ));
